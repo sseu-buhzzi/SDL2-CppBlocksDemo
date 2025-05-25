@@ -4,14 +4,14 @@
 #include "Entity.hpp"
 
 enum GameEventType{
-    ET_PLACE,
-    ET_BREAK
+	ET_PLACE,
+	ET_BREAK
 };
 
 struct GameEvent{
-    GameEventType type;
-    CameraEntity *entity;
-    BlockInstance *block_inst;
+	GameEventType type;
+	CameraEntity *entity;
+	BlockInstance *block_inst;
 };
 
 #endif

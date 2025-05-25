@@ -20,15 +20,15 @@
 #define TCO (::std::cout << __FILE__ << ':' << __LINE__ << '\t')
 
 namespace Sseu::BlockSource {
-    template<::uint32_t N> struct BlockTexDataWrapper{
-        ::std::vector<::std::vector<::uint8_t>> faces;
-        ::uint8_t *data[N];
-        BlockTexDataWrapper(::std::vector<::std::vector<::uint8_t>> faces_data): faces(faces_data) {
-            for (::uint32_t face{0U}; face < N; ++face) {
-                this->data[face] = this->faces[face].data();
-            }
-        }
-    };
+	template<::uint32_t N> struct BlockTexDataWrapper{
+		::std::vector<::std::vector<::uint8_t>> faces;
+		::uint8_t *data[N];
+		BlockTexDataWrapper(::std::vector<::std::vector<::uint8_t>> faces_data): faces(faces_data) {
+			for (::uint32_t face{0U}; face < N; ++face) {
+				this->data[face] = this->faces[face].data();
+			}
+		}
+	};
 }
 
 #endif
