@@ -27,11 +27,10 @@ namespace __TEST__ {
 ■◣◢◥◤■■▬▮∎
 */
 
-int32_t WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+int32_t main() {
     ::Sseu::init("SseuCraft", 64, 64, 768, 512);
     ::Sseu::BlockSource::source_init();
     ::Sseu::FontSource::source_init();
-    ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
     ::Sseu::activity_stack.push<::MainActivity>();
     ::Sseu::mainloop();
     TCO << "Main loop ended.\n";
@@ -68,10 +67,11 @@ void Camera::set_viewport_vector(double_t const viewport_x, double_t const viewp
     double_t const cos_ph{::cos(this->phi)}, sin_ph{::sin(this->phi)};
     double_t const cos_th{::cos(this->theta)}, sin_th{::sin(this->theta)};
     this->viewport_vector[0] = rel_x * cos_th - rel_y * cos_ph * sin_th + rel_z * sin_ph * sin_th;
-    ::std::isnan(this->viewport_vector[1] = -rel_x * sin_th - rel_y * cos_ph * cos_th + rel_z * sin_ph * cos_th) && (*this->viewport_vector = nan(nullptr));
-    ::std::isnan(this->viewport_vector[2] = rel_y * sin_ph +  rel_z * cos_ph) && (*this->viewport_vector = nan(nullptr));
+    ::std::isnan(this->viewport_vector[1] = -rel_x * sin_th - rel_y * cos_ph * cos_th + rel_z * sin_ph * cos_th) && (*this->viewport_vector = nan(""));
+    ::std::isnan(this->viewport_vector[2] = rel_y * sin_ph +  rel_z * cos_ph) && (*this->viewport_vector = nan(""));
 }
 bool Camera::get_viewport_vector(double_t const viewport_x, double_t const viewport_y, double_t *viewport_vector) const {
+    TCO << '\n';
     double_t const khi{viewport_x * M_PI * 0.375}, upsilon{viewport_y * M_PI_4};
     // double_t const khi{viewport_x * M_PI * 0.25}, upsilon{viewport_y * M_PI / 6};
     double_t const cos_kh{::cos(khi)};
@@ -82,8 +82,8 @@ bool Camera::get_viewport_vector(double_t const viewport_x, double_t const viewp
     double_t const cos_ph{::cos(this->phi)}, sin_ph{::sin(this->phi)};
     double_t const cos_th{::cos(this->theta)}, sin_th{::sin(this->theta)};
     viewport_vector[0] = rel_x * cos_th - rel_y * cos_ph * sin_th + rel_z * sin_ph * sin_th;
-    ::std::isnan(viewport_vector[1] = -rel_x * sin_th - rel_y * cos_ph * cos_th + rel_z * sin_ph * cos_th) && (*viewport_vector = nan(nullptr));
-    ::std::isnan(viewport_vector[2] = rel_y * sin_ph +  rel_z * cos_ph) && (*viewport_vector = nan(nullptr));
+    ::std::isnan(viewport_vector[1] = -rel_x * sin_th - rel_y * cos_ph * cos_th + rel_z * sin_ph * cos_th) && (*viewport_vector = nan(""));
+    ::std::isnan(viewport_vector[2] = rel_y * sin_ph +  rel_z * cos_ph) && (*viewport_vector = nan(""));
     return !::std::isnan(*viewport_vector);
 }
 bool Camera::get_pixel_coord3dv(double_t const depth, double_t *world_coord) const {
@@ -526,43 +526,44 @@ void MainActivity::update() {
     this->start_screen_painting();
     this->screen_display();
 
-    this->camera_entity.is_jumping = ::GetAsyncKeyState(VK_SPACE);
-    this->camera_entity.is_crouching = ::GetAsyncKeyState(VK_SHIFT);
-    this->camera_entity.is_walking_lati = ::GetAsyncKeyState('A') ? -0x01 : ::GetAsyncKeyState('D') ? 0x01 : 0x0;
-    this->camera_entity.is_walking_longi = ::GetAsyncKeyState('S') ? -0x01 : ::GetAsyncKeyState('W') ? 0x01 : 0x0;
-    if (::GetAsyncKeyState('0')) {
+    Uint8 const *keyboard_state{::SDL_GetKeyboardState(nullptr)};
+    this->camera_entity.is_jumping = keyboard_state[SDL_SCANCODE_SPACE];
+    this->camera_entity.is_crouching = keyboard_state[SDL_SCANCODE_LSHIFT] || keyboard_state[SDL_SCANCODE_RSHIFT];
+    this->camera_entity.is_walking_lati = keyboard_state[SDL_SCANCODE_A] ? -0x01 : keyboard_state[SDL_SCANCODE_D] ? 0x01 : 0x0;
+    this->camera_entity.is_walking_longi = keyboard_state[SDL_SCANCODE_S] ? -0x01 : keyboard_state[SDL_SCANCODE_W] ? 0x01 : 0x0;
+    if (keyboard_state[SDL_SCANCODE_0]) {
         this->camera_entity.holding_block = ::Sseu::BlockSource::block_enum[::BlockBaseType::BBT_AIR];
         ::std::cout << "air\n";
     }
-    if (::GetAsyncKeyState('1')) {
+    if (keyboard_state[SDL_SCANCODE_1]) {
         this->camera_entity.holding_block = ::Sseu::BlockSource::block_enum[::BlockBaseType::BBT_TEST_BLOCK];
         ::std::cout << "test_block\n";
     }
-    if (::GetAsyncKeyState('2')) {
+    if (keyboard_state[SDL_SCANCODE_2]) {
         this->camera_entity.holding_block = ::Sseu::BlockSource::block_enum[::BlockBaseType::BBT_BLACK_BLOCK];
         ::std::cout << "black_powder\n";
     }
-    if (::GetAsyncKeyState('3')) {
+    if (keyboard_state[SDL_SCANCODE_3]) {
         this->camera_entity.holding_block = ::Sseu::BlockSource::block_enum[::BlockBaseType::BBT_WHITE_BLOCK];
         ::std::cout << "white_powder\n";
     }
-    if (::GetAsyncKeyState('4')) {
+    if (keyboard_state[SDL_SCANCODE_4]) {
         this->camera_entity.holding_block = ::Sseu::BlockSource::block_enum[::BlockBaseType::BBT_RED_STONE_POWDER];
         ::std::cout << "red_stone_powder\n";
     }
-    if (::GetAsyncKeyState('5')) {
+    if (keyboard_state[SDL_SCANCODE_5]) {
         this->camera_entity.holding_block = ::Sseu::BlockSource::block_enum[::BlockBaseType::BBT_RED_STONE_BLOCK];
         ::std::cout << "red_stone_block\n";
     }
-    if (::GetAsyncKeyState('6')) {
+    if (keyboard_state[SDL_SCANCODE_6]) {
         this->camera_entity.holding_block = ::Sseu::BlockSource::block_enum[::BlockBaseType::BBT_RED_STONE_LAMP];
         ::std::cout << "red_stone_lamp\n";
     }
-    if (::GetAsyncKeyState('7')) {
+    if (keyboard_state[SDL_SCANCODE_7]) {
         this->camera_entity.holding_block = ::Sseu::BlockSource::block_enum[::BlockBaseType::BBT_ACTIVE_RED_STONE_TORCH];
         ::std::cout << "red_stone_torch\n";
     }
-    if (!__TEST__::key_E_state && ::GetAsyncKeyState('E')) {
+    if (!__TEST__::key_E_state && keyboard_state[SDL_SCANCODE_E]) {
         if (this->screen_interface == ::ScreenInterfaceType::SIT_GAME) {
             ::SDL_SetRelativeMouseMode(SDL_FALSE);
             this->camera_entity.is_updating = false;
@@ -573,8 +574,8 @@ void MainActivity::update() {
             this->screen_interface = ::ScreenInterfaceType::SIT_GAME;
         }
     }
-    __TEST__::key_E_state = ::GetAsyncKeyState('E');
-    if (::GetAsyncKeyState(VK_ESCAPE)) {
+    __TEST__::key_E_state = keyboard_state[SDL_SCANCODE_E];
+    if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
         ::Sseu::activity_stack.pop();
     }
 

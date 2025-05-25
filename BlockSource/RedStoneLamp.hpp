@@ -1,4 +1,4 @@
-#include "..\headers.hpp"
+#include "../headers.hpp"
 
 namespace Sseu::BlockSource {
     BlockTexDataWrapper<6U> red_stone_lamp_btx({
